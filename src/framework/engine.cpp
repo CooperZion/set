@@ -66,8 +66,8 @@ void Engine::initShapes() {
 
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes[ii] = make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{WIDTH / 4, HEIGHT / 2},
-                                           color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha});
+        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{WIDTH / 4, HEIGHT / 2},
+                                           color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
     }
 }
 
