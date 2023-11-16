@@ -37,7 +37,8 @@ class Engine {
         vector<unique_ptr<card>> player2;
 
         // Shapes
-        vector<unique_ptr<Shape>> cardShapes;
+        vector<unique_ptr<Rect>> cardShapes;
+        unique_ptr<Rect> cardItem;
 
     // Shaders
         Shader shapeShader;

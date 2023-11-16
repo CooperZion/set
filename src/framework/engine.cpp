@@ -66,9 +66,12 @@ void Engine::initShapes() {
 
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{WIDTH / 4, HEIGHT / 2},
+        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{10, 10}, vec2{WIDTH / 4, HEIGHT / 2},
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
     }
+
+    cardItem = make_unique<Rect>(shapeShader, vec2{10, 10}, vec2{100, 100},
+                                 color{1.0f, 1.0f, 1.0f, 1.0f});
 }
 
 void Engine::processInput() {
@@ -85,7 +88,7 @@ void Engine::processInput() {
         flagPlayer2 = true;
     }
 
-    for(unique_ptr<Shape> &shape : cardShapes) {
+    for(unique_ptr<Rect> &shape : cardShapes) {
         // Add stuff
     }
 
@@ -115,9 +118,9 @@ void Engine::render() {
 
     shapeShader.use();
 
-    for (int ii = 0; ii < cardShapes.size(); ii++) {
-        cardShapes[ii]->setUniforms();
-        cardShapes[ii]->draw();
+    for (const unique_ptr<Rect> & cardShape : cardShapes) {
+        cardShape->setUniforms();
+        cardShape->draw();
     }
 
     glfwSwapBuffers(window);
