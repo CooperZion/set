@@ -49,29 +49,26 @@ unsigned int Engine::initWindow(bool debug) {
 
 void Engine::initShaders() {
     shaderManager = make_unique<ShaderManager>();
-    shapeShader = this->shaderManager->loadShader("../res/shaders/circle.vert",
-                                                  "../res/shaders/circle.frag",
-                                                  nullptr, "circle");
+    shapeShader = this->shaderManager->loadShader("../res/shaders/shape.vert",
+                                                  "../res/shaders/shape.frag",
+                                                  nullptr, "shape");
     shapeShader.use();
     shapeShader.setMatrix4("projection", this->PROJECTION);
 }
 
 void Engine::initShapes() {
     vector<vector<int>> coordinateMatrix;
-    for (int column = 0; column < 4; column++) {
-        for (int row = 0; row < 3; row++) {
-            coordinateMatrix.push_back({(int) (0.25 * column * WIDTH), (int) (0.33 * row * HEIGHT)});
+    for (float ii = 0.1; ii < 1; ii += 0.2667) {
+        for (float jj = 0.9; jj > 0.4; jj -= 0.15) {
+            coordinateMatrix.push_back({(int) (ii * WIDTH), (int) (jj * HEIGHT)});
         }
     }
 
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{100, 100}, vec2{WIDTH / 4, HEIGHT / 2},
+        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{WIDTH / 8, 100},
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
     }
-
-    cardItem = make_unique<Rect>(shapeShader, vec2{10, 10}, vec2{100, 100},
-                                 color{1.0f, 1.0f, 1.0f, 1.0f});
 }
 
 void Engine::processInput() {
