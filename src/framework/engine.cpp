@@ -58,15 +58,15 @@ void Engine::initShaders() {
 
 void Engine::initShapes() {
     vector<vector<int>> coordinateMatrix;
-    for (float ii = 0.1; ii < 1; ii += 0.2667) {
-        for (float jj = 0.9; jj > 0.4; jj -= 0.15) {
-            coordinateMatrix.push_back({(int) (ii * WIDTH), (int) (jj * HEIGHT)});
+    for (int ii = 1; ii <= 4; ii++) {
+        for (int jj = 1; jj <= 3; jj++) {
+            coordinateMatrix.push_back({ii * 400 - 160, jj * 240 + 100});
         }
     }
 
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{WIDTH / 8, 100},
+        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{360, 200},
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
     }
 }
