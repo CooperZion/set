@@ -9,13 +9,36 @@
 using std::vector, glm::vec2, glm::vec3, glm::vec4, glm::mat4, glm::translate, glm::scale;
 
 class Shape {
+
+protected:
+    /// @brief Shader used to draw all abstract shapes.
+    Shader & shader;
+
+    /// @brief The position of the shape
+    vec2 pos;
+
+    vec2 size;
+
+    vec2 velocity;
+
+    /// @brief The VAO of the shape
+    struct color color;
+
+    /// @brief The Vertex Array Object, Vertex Buffer Object, and Element Buffer Object of the shape.
+    unsigned int VAO, VBO, EBO;
+
+    /// @brief The vertices of the shape
+    vector<float> vertices;
+
+    /// @brief The indices of the shape
+    vector<unsigned int> indices;
     public:
         /// @brief Construct a new Shape object
         /// @param shader The shader to use for rendering
         /// @param pos The position of the shape
         /// @param size The size of the shape
         /// @param color The color of the shape
-        Shape(Shader& shader, vec2 pos, vec2 size, color color);
+        Shape(Shader& shader, vec2 pos, vec2 size, struct color color);
 
         Shape(Shader& shader, vec2 pos, vec2 size, vec4 color);
 
@@ -97,7 +120,7 @@ class Shape {
         void update(float deltaTime);
 
         // Color
-        void setColor(color color);
+        void setColor(struct color color);
         void setColor(vec4 color);
         void setColor(vec3 color);
         void setRed(float r);
@@ -115,28 +138,7 @@ class Shape {
         /// @brief Pure virtual function to draw the shape.
         virtual void draw() const = 0;
 
-protected:
-        /// @brief Shader used to draw all abstract shapes.
-        Shader & shader;
 
-        /// @brief The position of the shape
-        vec2 pos;
-
-        vec2 size;
-
-        vec2 velocity;
-
-        /// @brief The VAO of the shape
-        color color;
-
-        /// @brief The Vertex Array Object, Vertex Buffer Object, and Element Buffer Object of the shape.
-        unsigned int VAO, VBO, EBO;
-
-        /// @brief The vertices of the shape
-        vector<float> vertices;
-
-        /// @brief The indices of the shape
-        vector<unsigned int> indices;
 };
 
 #endif //GRAPHICS_SHAPE_H
