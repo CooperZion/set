@@ -11,6 +11,7 @@
 #include "../shapes/rect.h"
 #include "../shapes/shape.h"
 #include "card.h"
+#include "fontRenderer.h"
 
 using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm::vec3, glm::vec4;
 
@@ -20,6 +21,8 @@ using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm
  */
 class Engine {
     private:
+        const int FONT_SIZE = 24;
+
         /// @brief The actual GLFW window.
         GLFWwindow* window{};
 
@@ -29,6 +32,7 @@ class Engine {
         /// @brief Responsible for loading and storing all the shaders used in the project.
         /// @details Initialized in initShaders()
         unique_ptr<ShaderManager> shaderManager;
+        unique_ptr<FontRenderer> fontRenderer;
 
         // decks of cards
         vector<unique_ptr<card>> deck;
@@ -38,11 +42,15 @@ class Engine {
 
         // Shapes
         vector<unique_ptr<Rect>> cardShapes;
+        vector<unique_ptr<Rect>> outlineShapes;
+        unique_ptr<Rect> cursor;
+        vector<int> hoverIndices;
 
-    // Shaders
+        // Shaders
         Shader shapeShader;
+        Shader textShader;
 
-        double mouseX, mouseY;
+        double mouseX{}, mouseY{};
 
     public:
         /// @brief Constructor for the Engine class.
@@ -76,8 +84,8 @@ class Engine {
         void render();
 
         /* deltaTime variables */
-        float deltaTime = 0.0f; // Time between current frame and last frame
-        float lastFrame = 0.0f; // Time of last frame (used to calculate deltaTime)
+        double deltaTime = 0.0f; // Time between current frame and last frame
+        double lastFrame = 0.0f; // Time of last frame (used to calculate deltaTime)
 
         // -----------------------------------
         // Getters
