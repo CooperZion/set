@@ -1,3 +1,6 @@
+
+#include <algorithm>
+#include <random>
 #include "engine.h"
 
 using namespace std;
@@ -5,13 +8,12 @@ using namespace std;
 // Color objects
 const color WHITE(1, 1, 1);
 const color BLACK(0, 0, 0);
-const color YELLOW(1, 1, 0);
 const color RED(1, 0, 0);
 const color GREEN(1, 0, 0);
 const color BLUE(1, 0, 0);
 
 //
-enum state {start, instructions, play, selectP1, selectP2, over};
+enum state {start, instructions, selectCards, play, over};
 state screen = start;
 static bool flagPlayer1 = false;
 static bool flagPlayer2 = false;
@@ -73,6 +75,9 @@ void Engine::initShaders() {
 }
 
 void Engine::initShapes() {
+    // Shape object for the cursor
+    cursor = make_unique<Rect>(shapeShader, vec2(10, 10), vec2(0, 0), WHITE);
+
     vector<vector<int>> coordinateMatrix;
     for (int ii = 1; ii <= 4; ii++) {
         for (int jj = 1; jj <= 3; jj++) {
@@ -81,10 +86,27 @@ void Engine::initShapes() {
     }
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{140, 140},
-                                           color{YELLOW.red, YELLOW.green, YELLOW.blue, YELLOW.alpha}));
-        outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{155, 155},
+        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{360, 200},
+                                           color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
+        outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{380, 220},
                                                color{RED.red, RED.green, RED.blue, RED.alpha}));
+    }
+
+    // Populate the deck
+    for (int ii = 0; ii < 3; ii++) {
+        for (int jj = 0; jj < 3; jj++) {
+            for (int kk = 0; kk < 3; kk++) {
+                for (int ll = 0; ll < 3; ll++) {
+                    deck.push_back(make_unique<card>(card(ii, jj, kk, ll)));
+                }
+            }
+        }
+    }
+    // Shuffle the card vector
+    std::shuffle(std::begin(deck), std::end(deck), std::mt19937(std::random_device()()));
+    // Grab the first 12 cards to begin the game with
+    for (int ii = 0; ii < 12; ii++) {
+        cardsInPlay.push_back(std::move(deck[ii]));
     }
 }
 
@@ -97,12 +119,6 @@ void Engine::processInput() {
     // Close window if escape key is pressed
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
-    }
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-        flagPlayer1 = true;
-    }
-    if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-        flagPlayer2 = true;
     }
 
     // Mouse position saved to check for collisions
@@ -123,13 +139,28 @@ void Engine::processInput() {
             break;
         }
         case play: {
+            if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+                flagPlayer1 = true;
+                countSelected = 0;
+            }
+            else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
+                flagPlayer2 = true;
+            }
+        }
+        case selectCards: {
             // Variable to hold mouse press status
             bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
             for (int ii = 0; ii < cardShapes.size(); ii++) {
                 if (cardShapes[ii]->isOverlapping(*cursor)) {
                     hoverIndices.push_back(ii);
+                    if (!mousePressed && mousePressedLastFrame) {
+                        if (flagPlayer1) {player1.push_back(std::move(cardsInPlay[ii]));}
+                        else if (flagPlayer2) {player2.push_back(std::move(cardsInPlay[ii]));}
+                        cardsInPlay.push_back(std::move(deck.back()));
+                    }
                 }
             }
+            mousePressedLastFrame = mousePressed;
         }
     }
 }
@@ -142,11 +173,9 @@ void Engine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    if (flagPlayer1) {
-        screen = selectP1;
-    } else if (flagPlayer2) {
-        screen = selectP2;
-    }
+    if (flagPlayer1 || flagPlayer2) {screen = selectCards;}
+
+    // TODO: Check to see if there are still sets that can be made
 }
 
 void Engine::render() {
@@ -156,9 +185,38 @@ void Engine::render() {
 
     shapeShader.use();
 
-    for (const unique_ptr<Rect> & cardShape : cardShapes) {
-        cardShape->setUniforms();
-        cardShape->draw();
+    switch (screen) {
+        case start: {
+            // TODO: Make start screen
+            break;
+        }
+        case instructions: {
+            // TODO: Make instructions screen
+            break;
+        }
+        case play: {
+            // TODO: Show current scores of each player
+            for (const unique_ptr<Rect> &cardShape : cardShapes) {
+                cardShape->setUniforms();
+                cardShape->draw();
+            }
+        }
+        case selectCards: {
+            // TODO: Show which player is selecting, show current scores of each player
+            for(int ii = 0; ii < hoverIndices.size(); ii++) {
+                outlineShapes[hoverIndices[ii]]->setUniforms();
+                outlineShapes[hoverIndices[ii]]->draw();
+                hoverIndices.pop_back();
+            }
+            for (const unique_ptr<Rect> &cardShape : cardShapes) {
+                cardShape->setUniforms();
+                cardShape->draw();
+            }
+        }
+        case over: {
+            // TODO: Show which player one and both scores
+            break;
+        }
     }
 
     glfwSwapBuffers(window);

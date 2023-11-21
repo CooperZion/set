@@ -37,6 +37,7 @@ class Engine {
         // decks of cards
         vector<unique_ptr<card>> deck;
         vector<unique_ptr<card>> cardsInPlay;
+        vector<unique_ptr<card>> selected;
         vector<unique_ptr<card>> player1;
         vector<unique_ptr<card>> player2;
 

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-card::card(colors c, shapes s, fills f, number n) {
+card::card(int c, int s, int f, int n) {
     setColor(c);
     setShape(s);
     setFill(f);
@@ -10,10 +10,10 @@ card::card(colors c, shapes s, fills f, number n) {
 }
 
 bool card::isSetWith(card *o1, card *o2) {
-    if ((this->n == o1->n && this->n == o2->n && o1->n == o2->n) || ((this->n != o1->n && this->n != o2->n && o1->n != o2->n))) {
-        if ((this->s == o1->s && this->s == o2->s && o1->s == o2->s) || ((this->s != o1->s && this->s != o2->s && o1->s != o2->s))) {
-            if ((this->c == o1->c && this->c == o2->c && o1->c == o2->c) || ((this->c != o1->c && this->c != o2->c && o1->c != o2->c))) {
-                if ((this->f == o1->f && this->f == o2->f && o1->f == o2->f) || ((this->f != o1->f && this->f != o2->f && o1->f != o2->f))) {
+    if ((this->number == o1->number && this->number == o2->number && o1->number == o2->number) || ((this->number != o1->number && this->number != o2->number && o1->number != o2->number))) {
+        if ((this->shape == o1->shape && this->shape == o2->shape && o1->shape == o2->shape) || ((this->shape != o1->shape && this->shape != o2->shape && o1->shape != o2->shape))) {
+            if ((this->color == o1->color && this->color == o2->color && o1->color == o2->color) || ((this->color != o1->color && this->color != o2->color && o1->color != o2->color))) {
+                if ((this->fill == o1->fill && this->fill == o2->fill && o1->fill == o2->fill) || ((this->fill != o1->fill && this->fill != o2->fill && o1->fill != o2->fill))) {
                     return true;
                 }
             }
@@ -22,34 +22,34 @@ bool card::isSetWith(card *o1, card *o2) {
     return false;
 }
 
-colors card::getColor() {
-    return this->c;
+int card::getColor() {
+    return this->color;
 }
 
-shapes card::getShape() {
-    return this->s;
+int card::getShape() {
+    return this->shape;
 }
 
-fills card::getFill() {
-    return this->f;
+int card::getFill() {
+    return this->fill;
 }
 
-number card::getNumber() {
-    return this->n;
+int card::getNumber() {
+    return this->number;
 }
 
-void card::setColor(colors col) {
-    this->c = col;
+void card::setColor(int col) {
+    this->color = col;
 }
 
-void card::setShape(shapes sha) {
-    this->s = sha;
+void card::setShape(int sha) {
+    this->shape = sha;
 }
 
-void card::setFill(fills fi) {
-    this->f = fi;
+void card::setFill(int fil) {
+    this->fill = fil;
 }
 
-void card::setNumber(number num) {
-    this->n = num;
+void card::setNumber(int num) {
+    this->number = num;
 }
