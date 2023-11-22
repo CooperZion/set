@@ -102,7 +102,7 @@ void Engine::initShapes() {
         for (int jj = 0; jj < 3; jj++) {
             for (int kk = 0; kk < 3; kk++) {
                 for (int ll = 0; ll < 3; ll++) {
-                    deck.push_back(card(ii, jj, kk, ll));
+                    deck.emplace_back(ii, jj, kk, ll);
                 }
             }
         }
@@ -111,7 +111,7 @@ void Engine::initShapes() {
     std::shuffle(std::begin(deck), std::end(deck), std::mt19937(std::random_device()()));
     // Grab the first 12 cards to begin the game with
     for (int ii = 0; ii < 12; ii++) {
-        cardsInPlay.push_back(std::move(deck[ii]));
+        cardsInPlay.push_back(deck[ii]);
     }
 }
 
@@ -151,6 +151,9 @@ void Engine::processInput() {
             screen = selectCards;
             selected.clear();
         }
+        else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
+            // TODO: Add more cards
+        }
     }
     else if (screen == selectCards) {
         // Variable to hold mouse press status
@@ -159,8 +162,8 @@ void Engine::processInput() {
             if (cardShapes[ii]->isOverlapping(*cursor)) {
                 hoverIndices.push_back(ii);
                 if (!mousePressed && mousePressedLastFrame && selected.size() < 3) {
-                    selected.push_back(std::move(cardsInPlay[ii]));
-                    cardsInPlay.push_back(std::move(deck.back()));
+                    selected.push_back(cardsInPlay[ii]);
+                    cardsInPlay.push_back(deck.back());
                     selectedIndices.push_back(ii);
                 }
             }
@@ -190,6 +193,18 @@ void Engine::update() {
     }
 
     // TODO: Check to see if there are still sets that can be made
+    for (card &card1 : cardsInPlay) {
+        for (card &card2: cardsInPlay) {
+            for (card &card3 : cardsInPlay) {
+                setCanBeMade = card1.isSetWith(&card2, &card3);
+            }
+        }
+    }
+
+    if (!setCanBeMade && deck.empty()) {
+        screen = over;
+    }
+
 }
 
 void Engine::render() {
@@ -237,7 +252,7 @@ void Engine::render() {
                         player1Score++;
                         flagPlayer1 = false;
                     }
-                    else {
+                    else if (flagPlayer2) {
                         player2Score++;
                         flagPlayer2 = false;
                     }

@@ -56,6 +56,7 @@ class Engine {
 
         double mouseX{}, mouseY{};
         bool validSet = false;
+        bool setCanBeMade = true;
 
     public:
         /// @brief Constructor for the Engine class.
