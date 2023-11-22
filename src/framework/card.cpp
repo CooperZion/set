@@ -9,7 +9,7 @@ card::card(int c, int s, int f, int n) {
     setNumber(n);
 }
 
-bool card::isSetWith(card *o1, card *o2) {
+bool card::isSetWith(std::unique_ptr<card> o1, std::unique_ptr<card> o2) {
     if ((this->number == o1->number && this->number == o2->number && o1->number == o2->number) || ((this->number != o1->number && this->number != o2->number && o1->number != o2->number))) {
         if ((this->shape == o1->shape && this->shape == o2->shape && o1->shape == o2->shape) || ((this->shape != o1->shape && this->shape != o2->shape && o1->shape != o2->shape))) {
             if ((this->color == o1->color && this->color == o2->color && o1->color == o2->color) || ((this->color != o1->color && this->color != o2->color && o1->color != o2->color))) {

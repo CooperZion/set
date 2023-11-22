@@ -9,15 +9,17 @@ using namespace std;
 const color WHITE(1, 1, 1);
 const color BLACK(0, 0, 0);
 const color RED(1, 0, 0);
-const color GREEN(1, 0, 0);
+const color GREEN(0, 1, 0);
 const color BLUE(1, 0, 0);
 
 // Color vectors
 vec3 WHITE_VECT = {WHITE.red, WHITE.green, WHITE.blue};
 
-//
+// game state objects
 enum state {start, instructions, play, selectCards, over};
 state screen = start;
+
+// flags to denote which player is acting
 static bool flagPlayer1 = false;
 static bool flagPlayer2 = false;
 
@@ -92,7 +94,7 @@ void Engine::initShapes() {
         cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{360, 200},
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
         outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{380, 220},
-                                               color{RED.red, RED.green, RED.blue, RED.alpha}));
+                                                  color{RED.red, RED.green, RED.blue, RED.alpha}));
     }
 
     // Populate the deck
@@ -175,13 +177,12 @@ void Engine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    for(int ii = 0; ii < selectedIndices.size(); ii++) {
-        outlineShapes[selectedIndices[ii]]->setColor(GREEN);
-        selectedIndices.pop_back();
+    if (selected.size() == 3) {
+        validSet = selected[0]->isSetWith(std::move(selected[1]), std::move(selected[2]));
     }
 
-    if (screen == selectCards) {
-        cout << "Bruh" << endl;
+    for (int selectedIndex : selectedIndices) {
+        outlineShapes[selectedIndex]->setColor(GREEN);
     }
 
     // TODO: Check to see if there are still sets that can be made
@@ -216,14 +217,22 @@ void Engine::render() {
         }
         case selectCards: {
             // TODO: Show which player is selecting, show current scores of each player
-            for(int ii = 0; ii < hoverIndices.size(); ii++) {
-                outlineShapes[hoverIndices[ii]]->setUniforms();
-                outlineShapes[hoverIndices[ii]]->draw();
-                hoverIndices.pop_back();
+            for (int hoverIndex : hoverIndices) {
+                outlineShapes[hoverIndex]->setUniforms();
+                outlineShapes[hoverIndex]->draw();
+                if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
             for (const unique_ptr<Rect> &cardShape : cardShapes) {
                 cardShape->setUniforms();
                 cardShape->draw();
+            }
+            if (selected.size() == 3) {
+                if (validSet) {
+                    // TODO: Make a message for a valid set, add a point to player's score
+                    screen = play;
+                    flagPlayer1 = false;
+                    flagPlayer2 = false;
+                }
             }
         }
         case over: {

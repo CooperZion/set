@@ -53,6 +53,7 @@ class Engine {
         Shader textShader;
 
         double mouseX{}, mouseY{};
+        bool validSet{};
 
     public:
         /// @brief Constructor for the Engine class.
