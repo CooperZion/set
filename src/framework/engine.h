@@ -35,11 +35,9 @@ class Engine {
         unique_ptr<FontRenderer> fontRenderer;
 
         // decks of cards
-        vector<unique_ptr<card>> deck;
-        vector<unique_ptr<card>> cardsInPlay;
-        vector<unique_ptr<card>> selected;
-        vector<unique_ptr<card>> player1;
-        vector<unique_ptr<card>> player2;
+        vector<card> deck;
+        vector<card> cardsInPlay;
+        vector<card> selected;
 
         // Shapes
         vector<unique_ptr<Rect>> cardShapes;
@@ -48,12 +46,16 @@ class Engine {
         vector<int> hoverIndices;
         vector<int> selectedIndices;
 
+        // score objects
+        int player1Score = 0;
+        int player2Score = 0;
+
         // Shaders
         Shader shapeShader;
         Shader textShader;
 
         double mouseX{}, mouseY{};
-        bool validSet{};
+        bool validSet = false;
 
     public:
         /// @brief Constructor for the Engine class.

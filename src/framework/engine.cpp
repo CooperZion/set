@@ -102,7 +102,7 @@ void Engine::initShapes() {
         for (int jj = 0; jj < 3; jj++) {
             for (int kk = 0; kk < 3; kk++) {
                 for (int ll = 0; ll < 3; ll++) {
-                    deck.push_back(make_unique<card>(card(ii, jj, kk, ll)));
+                    deck.push_back(card(ii, jj, kk, ll));
                 }
             }
         }
@@ -178,11 +178,15 @@ void Engine::update() {
     lastFrame = currentFrame;
 
     if (selected.size() == 3) {
-        validSet = selected[0]->isSetWith(std::move(selected[1]), std::move(selected[2]));
+        validSet = selected[0].isSetWith(&selected[1], &selected[2]);
     }
 
-    for (int selectedIndex : selectedIndices) {
-        outlineShapes[selectedIndex]->setColor(GREEN);
+    if (!selectedIndices.empty()) {
+        for (int selectedIndex: selectedIndices) {outlineShapes[selectedIndex]->setColor(GREEN);}
+    }
+    // Reset the red outlines after the selections are cleared
+    else {
+        for (unique_ptr<Rect> &shape: outlineShapes) {shape->setColor(RED);}
     }
 
     // TODO: Check to see if there are still sets that can be made
@@ -228,15 +232,27 @@ void Engine::render() {
             }
             if (selected.size() == 3) {
                 if (validSet) {
-                    // TODO: Make a message for a valid set, add a point to player's score
-                    screen = play;
-                    flagPlayer1 = false;
-                    flagPlayer2 = false;
+                    // TODO: Make a message for a valid set
+                    if (flagPlayer1) {
+                        player1Score++;
+                        flagPlayer1 = false;
+                    }
+                    else {
+                        player2Score++;
+                        flagPlayer2 = false;
+                    }
+                    validSet = false;
                 }
+                else {
+                    // TODO: Make a message for invalid set
+                }
+                screen = play;
+                selected.clear();
+                selectedIndices.clear();
             }
         }
         case over: {
-            // TODO: Show which player one and both scores
+            // TODO: Show which player won and both scores
             break;
         }
     }

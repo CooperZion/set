@@ -45,7 +45,7 @@ public:
     void setShape(int sha);
     void setFill(int fil);
     void setNumber(int num);
-    bool isSetWith(std::unique_ptr<card> o1, std::unique_ptr<card> o2);
+    bool isSetWith(card *o1, card *o2);
 };
 
 #endif //GRAPHICS_CARD_H
