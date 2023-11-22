@@ -46,6 +46,7 @@ class Engine {
         vector<unique_ptr<Rect>> outlineShapes;
         unique_ptr<Rect> cursor;
         vector<int> hoverIndices;
+        vector<int> selectedIndices;
 
         // Shaders
         Shader shapeShader;

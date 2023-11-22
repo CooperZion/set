@@ -12,8 +12,11 @@ const color RED(1, 0, 0);
 const color GREEN(1, 0, 0);
 const color BLUE(1, 0, 0);
 
+// Color vectors
+vec3 WHITE_VECT = {WHITE.red, WHITE.green, WHITE.blue};
+
 //
-enum state {start, instructions, selectCards, play, over};
+enum state {start, instructions, play, selectCards, over};
 state screen = start;
 static bool flagPlayer1 = false;
 static bool flagPlayer2 = false;
@@ -128,40 +131,39 @@ void Engine::processInput() {
     cursor->setPosX(mouseX);
     cursor->setPosY(mouseY);
 
-    switch (screen) {
-        case start: {
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { screen = play; }
-            else if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) { screen = instructions; }
-            break;
+    if (screen == start) {
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { screen = play; }
+        else if (glfwGetKey(window, GLFW_KEY_I) == GLFW_PRESS) { screen = instructions; }
+    }
+    else if (screen == instructions) {
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { screen = play; }
+    }
+    else if (screen == play) {
+        if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+            flagPlayer1 = true;
+            screen = selectCards;
+            selected.clear();
         }
-        case instructions: {
-            if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) { screen = play; }
-            break;
+        else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
+            flagPlayer2 = true;
+            screen = selectCards;
+            selected.clear();
         }
-        case play: {
-            if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-                flagPlayer1 = true;
-                countSelected = 0;
-            }
-            else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
-                flagPlayer2 = true;
-            }
-        }
-        case selectCards: {
-            // Variable to hold mouse press status
-            bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-            for (int ii = 0; ii < cardShapes.size(); ii++) {
-                if (cardShapes[ii]->isOverlapping(*cursor)) {
-                    hoverIndices.push_back(ii);
-                    if (!mousePressed && mousePressedLastFrame) {
-                        if (flagPlayer1) {player1.push_back(std::move(cardsInPlay[ii]));}
-                        else if (flagPlayer2) {player2.push_back(std::move(cardsInPlay[ii]));}
-                        cardsInPlay.push_back(std::move(deck.back()));
-                    }
+    }
+    else if (screen == selectCards) {
+        // Variable to hold mouse press status
+        bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+        for (int ii = 0; ii < cardShapes.size(); ii++) {
+            if (cardShapes[ii]->isOverlapping(*cursor)) {
+                hoverIndices.push_back(ii);
+                if (!mousePressed && mousePressedLastFrame && selected.size() < 3) {
+                    selected.push_back(std::move(cardsInPlay[ii]));
+                    cardsInPlay.push_back(std::move(deck.back()));
+                    selectedIndices.push_back(ii);
                 }
             }
-            mousePressedLastFrame = mousePressed;
         }
+        mousePressedLastFrame = mousePressed;
     }
 }
 
@@ -173,7 +175,14 @@ void Engine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    if (flagPlayer1 || flagPlayer2) {screen = selectCards;}
+    for(int ii = 0; ii < selectedIndices.size(); ii++) {
+        outlineShapes[selectedIndices[ii]]->setColor(GREEN);
+        selectedIndices.pop_back();
+    }
+
+    if (screen == selectCards) {
+        cout << "Bruh" << endl;
+    }
 
     // TODO: Check to see if there are still sets that can be made
 }
@@ -188,10 +197,14 @@ void Engine::render() {
     switch (screen) {
         case start: {
             // TODO: Make start screen
+            string message = "Let's Play Set!";
+            fontRenderer->renderText(message, 300, 300, 1, WHITE_VECT);
             break;
         }
         case instructions: {
             // TODO: Make instructions screen
+            string message = "Instructions";
+            fontRenderer->renderText(message, 300, 300, 1, WHITE_VECT);
             break;
         }
         case play: {
