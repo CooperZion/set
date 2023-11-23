@@ -46,6 +46,7 @@ public:
     void setFill(int fil);
     void setNumber(int num);
     bool isSetWith(card *o1, card *o2);
+    friend bool operator == (card &o1, card &o2);
 };
 
 #endif //GRAPHICS_CARD_H

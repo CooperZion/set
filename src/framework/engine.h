@@ -37,7 +37,7 @@ class Engine {
         // decks of cards
         vector<card> deck;
         vector<card> cardsInPlay;
-        vector<card> selected;
+        vector<card> selectedCards;
 
         // Shapes
         vector<unique_ptr<Rect>> cardShapes;
@@ -57,6 +57,7 @@ class Engine {
         double mouseX{}, mouseY{};
         bool validSet = false;
         bool setCanBeMade = true;
+        bool extraCards = false;
 
     public:
         /// @brief Constructor for the Engine class.

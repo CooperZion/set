@@ -86,14 +86,14 @@ void Engine::initShapes() {
     vector<vector<int>> coordinateMatrix;
     for (int ii = 1; ii <= 4; ii++) {
         for (int jj = 1; jj <= 3; jj++) {
-            coordinateMatrix.push_back({ii * 400 - 160, jj * 240 + 100});
+            coordinateMatrix.push_back({ii * 390 - 135, jj * 265 + 20});
         }
     }
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{360, 200},
+        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{350, 225},
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
-        outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{380, 220},
+        outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{370, 245},
                                                   color{RED.red, RED.green, RED.blue, RED.alpha}));
     }
 
@@ -144,15 +144,15 @@ void Engine::processInput() {
         if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
             flagPlayer1 = true;
             screen = selectCards;
-            selected.clear();
+            selectedCards.clear();
         }
         else if (glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS) {
             flagPlayer2 = true;
             screen = selectCards;
-            selected.clear();
+            selectedCards.clear();
         }
         else if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
-            // TODO: Add more cards
+            extraCards = true;
         }
     }
     else if (screen == selectCards) {
@@ -161,8 +161,8 @@ void Engine::processInput() {
         for (int ii = 0; ii < cardShapes.size(); ii++) {
             if (cardShapes[ii]->isOverlapping(*cursor)) {
                 hoverIndices.push_back(ii);
-                if (!mousePressed && mousePressedLastFrame && selected.size() < 3) {
-                    selected.push_back(cardsInPlay[ii]);
+                if (!mousePressed && mousePressedLastFrame && selectedCards.size() < 3) {
+                    selectedCards.push_back(cardsInPlay[ii]);
                     cardsInPlay.push_back(deck.back());
                     selectedIndices.push_back(ii);
                 }
@@ -180,11 +180,11 @@ void Engine::update() {
     deltaTime = currentFrame - lastFrame;
     lastFrame = currentFrame;
 
-    if (selected.size() == 3) {
-        validSet = selected[0].isSetWith(&selected[1], &selected[2]);
-    }
-
+    // Logic to deal with selected cards in the selection screen
     if (!selectedIndices.empty()) {
+        // Check to see if there are 3 cards selected, if there are, see if it's a set
+        if (selectedCards.size() == 3) { validSet = selectedCards[0].isSetWith(&selectedCards[1], &selectedCards[2]);}
+        // Change the outline of selected cards to green
         for (int selectedIndex: selectedIndices) {outlineShapes[selectedIndex]->setColor(GREEN);}
     }
     // Reset the red outlines after the selections are cleared
@@ -192,15 +192,19 @@ void Engine::update() {
         for (unique_ptr<Rect> &shape: outlineShapes) {shape->setColor(RED);}
     }
 
-    // TODO: Check to see if there are still sets that can be made
+    // Check to see if there are still sets that can be made
+    // This seems like an inefficient way of doing it, but I don't know how else to do it
     for (card &card1 : cardsInPlay) {
         for (card &card2: cardsInPlay) {
             for (card &card3 : cardsInPlay) {
-                setCanBeMade = card1.isSetWith(&card2, &card3);
+                if (&card1 != &card2 && &card2 != &card3 && &card1 != &card3) {
+                    setCanBeMade = card1.isSetWith(&card2, &card3);
+                }
             }
         }
     }
 
+    // This is the only way the game ends
     if (!setCanBeMade && deck.empty()) {
         screen = over;
     }
@@ -229,6 +233,7 @@ void Engine::render() {
         }
         case play: {
             // TODO: Show current scores of each player
+            // Render the card shapes
             for (const unique_ptr<Rect> &cardShape : cardShapes) {
                 cardShape->setUniforms();
                 cardShape->draw();
@@ -236,16 +241,19 @@ void Engine::render() {
         }
         case selectCards: {
             // TODO: Show which player is selecting, show current scores of each player
+            // Render the shapes of the outlines
             for (int hoverIndex : hoverIndices) {
                 outlineShapes[hoverIndex]->setUniforms();
                 outlineShapes[hoverIndex]->draw();
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
+            // Render the card shapes
             for (const unique_ptr<Rect> &cardShape : cardShapes) {
                 cardShape->setUniforms();
                 cardShape->draw();
             }
-            if (selected.size() == 3) {
+            // Handle the logic for whether the 3 selected cards are a set
+            if (selectedCards.size() == 3) {
                 if (validSet) {
                     // TODO: Make a message for a valid set
                     if (flagPlayer1) {
@@ -261,8 +269,10 @@ void Engine::render() {
                 else {
                     // TODO: Make a message for invalid set
                 }
+                // Clear the selected cards and switch back to the play screen,
+                // regardless of whether they're a set
                 screen = play;
-                selected.clear();
+                selectedCards.clear();
                 selectedIndices.clear();
             }
         }

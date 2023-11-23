@@ -53,3 +53,7 @@ void card::setFill(int fil) {
 void card::setNumber(int num) {
     this->number = num;
 }
+
+bool operator==(card &o1, card &o2) {
+    return o1.color == o2.color && o1.fill == o2.fill && o1.number == o2.number && o1.shape == o2.shape;
+}
