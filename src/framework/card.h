@@ -12,9 +12,9 @@ enum colors {
 };
 
 enum shapes {
-    rectangle,
-    square,
-    diamond
+    cardRectangle,
+    cardSquare,
+    cardDiamond
 };
 
 enum fills {
@@ -24,9 +24,9 @@ enum fills {
 };
 
 enum numbers {
-    one,
-    two,
-    three
+    cardOne,
+    cardTwo,
+    cardThree
 };
 
 class card {
