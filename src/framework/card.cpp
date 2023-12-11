@@ -2,11 +2,12 @@
 
 using namespace std;
 
-card::card(int c, int s, int f, int n) {
+card::card(int c, int s, int f, int n, int p) {
     setColor(c);
     setShape(s);
     setFill(f);
     setNumber(n);
+    setMapPos(p);
 }
 
 bool card::isSetWith(card *o1, card *o2) {
@@ -38,6 +39,10 @@ int card::getNumber() {
     return this->number;
 }
 
+int card::getMapPos() {
+    return this->mapPos;
+}
+
 void card::setColor(int col) {
     this->color = col;
 }
@@ -52,6 +57,10 @@ void card::setFill(int fil) {
 
 void card::setNumber(int num) {
     this->number = num;
+}
+
+void card::setMapPos(int pos) {
+    this->mapPos = pos;
 }
 
 bool operator==(card &o1, card &o2) {

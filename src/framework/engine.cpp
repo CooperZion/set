@@ -11,7 +11,6 @@ const color WHITE(1, 1, 1);
 const color BLACK(0, 0, 0);
 const color RED(1, 0, 0);
 const color GREEN(0, 1, 0);
-const color BLUE(1, 0, 0);
 
 // Color vectors
 vec3 WHITE_VECT = {WHITE.red, WHITE.green, WHITE.blue};
@@ -115,18 +114,19 @@ void Engine::initShapes() {
     }
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{350, 225},
+        cardShapes.push_back(make_unique<Tex>(cardShader, vec2{coordVect[0], coordVect[1]}, vec2{350, 225},
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
         outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{370, 245},
                                                   color{RED.red, RED.green, RED.blue, RED.alpha}));
     }
 
+    int mapPos = 0;
     // Populate the deck
     for (int ii = 0; ii < 3; ii++) {
         for (int jj = 0; jj < 3; jj++) {
             for (int kk = 0; kk < 3; kk++) {
                 for (int ll = 0; ll < 3; ll++) {
-                    deck.emplace_back(ii, jj, kk, ll);
+                    deck.emplace_back(ii, jj, kk, ll, mapPos);
                 }
             }
         }
@@ -245,7 +245,6 @@ void Engine::render() {
 
     switch (screen) {
         case start: {
-            // TODO: Make start screen
             string message = "Let's Play Set!";
             string message1 = "Press [S] to start game, [I] for instructions";
             fontRenderer->renderText(message, 192, 300, 1.2, WHITE_VECT);
@@ -253,7 +252,6 @@ void Engine::render() {
             break;
         }
         case instructions: {
-            // TODO: Make instructions screen
             string message = "Instructions";
             // newline isn't working????
             string instructions_1a = "1. The object of the game is to identify a SET of 3 cards from 12 cards ";
@@ -280,15 +278,14 @@ void Engine::render() {
             fontRenderer->renderText(instructions_2e, 25, 360, .45, WHITE_VECT);
             fontRenderer->renderText(instructions_2f, 25, 340, .45, WHITE_VECT);
 
-
-
             break;
         }
         case play: {
             // TODO: Show current scores of each player
             // Render the card shapes
-            for (const unique_ptr<Rect> &cardShape : cardShapes) {
-                cardShape->setUniforms();
+            for (const unique_ptr<Tex> &cardShape : cardShapes) {
+                // TODO: Add the UV coordinates here and call this
+                // cardShape->setUniforms(u, v);
                 cardShape->draw();
             }
         }
@@ -301,8 +298,9 @@ void Engine::render() {
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
             // Render the card shapes
-            for (const unique_ptr<Rect> &cardShape : cardShapes) {
-                cardShape->setUniforms();
+            for (const unique_ptr<Tex> &cardShape : cardShapes) {
+                // TODO: Add the UV coordinates here and call this
+                // cardShape->setUniforms();
                 cardShape->draw();
             }
             // Handle the logic for whether the 3 selected cards are a set
