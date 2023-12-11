@@ -51,10 +51,6 @@ void Shape::setUniforms() const {
     this->shader.setVector4f("shapeColor", color.vec);
 }
 
-void Shape::changeUniforms() const {
-    glGetUniformLocation(this->shader.ID, "tex");
-}
-
 // Setters
 void Shape::move(vec2 offset)         { pos += offset; }
 void Shape::moveX(float x)            { pos.x += x; }
