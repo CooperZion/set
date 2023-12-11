@@ -224,13 +224,41 @@ void Engine::render() {
         case start: {
             // TODO: Make start screen
             string message = "Let's Play Set!";
-            fontRenderer->renderText(message, 300, 300, 1, WHITE_VECT);
+            string message1 = "Press [S] to start game, [I] for instructions";
+            fontRenderer->renderText(message, 192, 300, 1.2, WHITE_VECT);
+            fontRenderer->renderText(message1, 50, 200, .65, WHITE_VECT);
             break;
         }
         case instructions: {
             // TODO: Make instructions screen
             string message = "Instructions";
-            fontRenderer->renderText(message, 300, 300, 1, WHITE_VECT);
+            // newline isn't working????
+            string instructions_1a = "1. The object of the game is to identify a SET of 3 cards from 12 cards ";
+            string instructions_1b = "placed face-up on the table. Each card has four distinct features: shape,";
+            string instructions_1c = "color, number, and shading. ";
+
+            string instructions_2a = "2. A SET consists of 3 cards in which each of the cards' features, when";
+            string instructions_2b = "looked at one-by-one, are the same on each card, or, are different on ";
+            string instructions_2c = "each card. All of the features must SEPARATELY satisfy this rule. In";
+            string instructions_2d = "other words: shape must be either the same on all 3 cards, or different";
+            string instructions_2e = "on each of the 3 cards; color must be either the same on all 3 cards,";
+            string instructions_2f = "or different on each of the 3, etc.";
+
+            fontRenderer->renderText(message, 260, 560, 1.2, WHITE_VECT);
+
+            fontRenderer->renderText(instructions_1a, 25, 510, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_1b, 25, 490, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_1c, 25, 470, .45, WHITE_VECT);
+
+            fontRenderer->renderText(instructions_2a, 25, 440, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2b, 25, 420, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2c, 25, 400, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2d, 25, 380, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2e, 25, 360, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2f, 25, 340, .45, WHITE_VECT);
+
+
+
             break;
         }
         case play: {
