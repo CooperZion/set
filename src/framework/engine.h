@@ -36,7 +36,7 @@ class Engine {
         unique_ptr<FontRenderer> fontRenderer;
 
         // texturing objects
-        int imgX, imgY, imgN;
+        int imgX, imgY, imgN, mapU, mapV, mapPos;
         unsigned char* imgObject;
         GLuint textureObject;
 
