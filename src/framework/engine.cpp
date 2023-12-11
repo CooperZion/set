@@ -82,11 +82,11 @@ void Engine::initShaders() {
 
     // Set uniforms
     textShader.use().setVector2f("vertex", vec4(100, 100, .5, .5));
-    cardShader.use().setMatrix4("projection", this->PROJECTION);
+    cardShader.use().setMatrix4("tex", this->PROJECTION);
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
 
     // Texturing magic
-    const char *filename = "card_map.png";
+    const char *filename = "res/cards/diamonds/1EPD.png";
     imgObject = stbi_load(filename, &imgX, &imgY, &imgN, 4);
 
     glGenTextures(1, &textureObject);
@@ -182,8 +182,8 @@ void Engine::processInput() {
     else if (screen == selectCards) {
         // Variable to hold mouse press status
         bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-        for (int ii = 0; ii < cardShapes.size(); ii++) {
-            if (cardShapes[ii]->isOverlapping(*cursor)) {
+        for (int ii = 0; ii < outlineShapes.size(); ii++) {
+            if (outlineShapes[ii]->isOverlapping(*cursor)) {
                 hoverIndices.push_back(ii);
                 if (!mousePressed && mousePressedLastFrame && selectedCards.size() < 3) {
                     selectedCards.push_back(cardsInPlay[ii]);
@@ -283,13 +283,13 @@ void Engine::render() {
         case play: {
             // TODO: Show current scores of each player
             // Render the card textures
-            for (int ii = 0; ii < cardShapes.size(); ii++) {
-                mapPos = cardsInPlay[ii].getMapPos();
-                mapU = int(mapPos / 9) + 1;
-                mapV = mapPos % 9;
-                cardShapes[ii]->setUniforms(mapU, mapV);
-                cardShapes[ii]->draw();
-            }
+//            for (int ii = 0; ii < cardShapes.size(); ii++) {
+//                mapPos = cardsInPlay[ii].getMapPos();
+//                mapU = int(mapPos / 9) + 1;
+//                mapV = mapPos % 9;
+//                cardShapes[ii]->setUniforms(mapU, mapV);
+//                cardShapes[ii]->draw();
+//            }
         }
         case selectCards: {
             // TODO: Show which player is selecting, show current scores of each player
@@ -302,11 +302,11 @@ void Engine::render() {
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
                 // TODO: Add the UV coordinates here and call this
-                mapPos = cardsInPlay[ii].getMapPos();
-                mapU = int(mapPos / 9) + 1;
-                mapV = mapPos % 9;
-                cardShapes[ii]->setUniforms(mapU, mapV);
-                cardShapes[ii]->draw();
+//                mapPos = cardsInPlay[ii].getMapPos();
+//                mapU = int(mapPos / 9) + 1;
+//                mapV = mapPos % 9;
+//                cardShapes[ii]->setUniforms(mapU, mapV);
+//                cardShapes[ii]->draw();
             }
             // Handle the logic for whether the 3 selected cards are a set
             if (selectedCards.size() == 3) {
