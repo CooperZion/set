@@ -34,6 +34,11 @@ class Engine {
         unique_ptr<ShaderManager> shaderManager;
         unique_ptr<FontRenderer> fontRenderer;
 
+        // texturing objects
+        int imgX, imgY, imgN;
+        unsigned char* imgObject;
+        GLuint textureObject;
+
         // decks of cards
         vector<card> deck;
         vector<card> cardsInPlay;
@@ -54,6 +59,7 @@ class Engine {
 
         // Shaders
         Shader shapeShader;
+        Shader cardShader;
         Shader textShader;
 
         double mouseX{}, mouseY{};

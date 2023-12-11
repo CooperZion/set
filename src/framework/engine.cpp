@@ -71,13 +71,36 @@ void Engine::initShaders() {
     shapeShader.use();
     shapeShader.setMatrix4("projection", this->PROJECTION);
 
+    cardShader = this->shaderManager->loadShader("../res/shaders/card.vert",
+                                                 "../res/shaders/card.frag",
+                                                 nullptr, "card");
+    cardShader.use();
+    cardShader.setMatrix4("text", this->PROJECTION);
+
     // Configure text shader and renderer
     textShader = shaderManager->loadShader("../res/shaders/text.vert", "../res/shaders/text.frag", nullptr, "text");
     fontRenderer = make_unique<FontRenderer>(shaderManager->getShader("text"), "../res/fonts/MxPlus_IBM_BIOS.ttf", FONT_SIZE);
 
     // Set uniforms
     textShader.use().setVector2f("vertex", vec4(100, 100, .5, .5));
+    cardShader.use().setMatrix4("projection", this->PROJECTION);
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
+
+    // Texturing magic
+    const char *filename = "card_map.png";
+    imgObject = stbi_load(filename, &imgX, &imgY, &imgN, 4);
+
+    glGenTextures(1, &textureObject);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureObject);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgX, imgY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgObject);
+    free(imgObject);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 void Engine::initShapes() {

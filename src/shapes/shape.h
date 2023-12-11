@@ -139,6 +139,7 @@ protected:
         virtual void draw() const = 0;
 
 
+    void changeUniforms() const;
 };
 
 #endif //GRAPHICS_SHAPE_H

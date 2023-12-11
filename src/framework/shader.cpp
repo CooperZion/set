@@ -1,5 +1,7 @@
 #include "shader.h"
 
+
+
 Shader &Shader::use() {
     glUseProgram(this->ID);
     return *this;
