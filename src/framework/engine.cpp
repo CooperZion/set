@@ -255,17 +255,31 @@ void Engine::render() {
         case instructions: {
             // TODO: Make instructions screen
             string message = "Instructions";
-            // newline isn't working????
-            string instructions_1a = "1. The object of the game is to identify a SET of 3 cards from 12 cards ";
-            string instructions_1b = "placed face-up on the table. Each card has four distinct features: shape,";
-            string instructions_1c = "color, number, and shading. ";
+
+            string instructions_1a = "1. The object of the game is to identify a SET of 3 cards from the cards ";
+            string instructions_1b = "on screen. Each card has four distinct features: shape, color, number,";
+            string instructions_1c = "and shading. Player with the most SETs at the end of the game wins.";
 
             string instructions_2a = "2. A SET consists of 3 cards in which each of the cards' features, when";
-            string instructions_2b = "looked at one-by-one, are the same on each card, or, are different on ";
+            string instructions_2b = "looked at individually, are the same on each card, or are different on ";
             string instructions_2c = "each card. All of the features must SEPARATELY satisfy this rule. In";
             string instructions_2d = "other words: shape must be either the same on all 3 cards, or different";
-            string instructions_2e = "on each of the 3 cards; color must be either the same on all 3 cards,";
-            string instructions_2f = "or different on each of the 3, etc.";
+            string instructions_2e = "on all 3 cards; color must be the same on all 3 cards, or different";
+            string instructions_2f = "on all 3 cards, etc.";
+
+            string instructions_3a = "3. To begin, the cards are shuffled, and 12 are displayed on the screen.";
+            string instructions_3b = "Players pick up SETs of 3 cards from anywhere on the table. If chosen";
+            string instructions_3c = "correctly, the SET is kept by the player and the 3 cards are replaced";
+            string instructions_3d = "with 3 from the deck.";
+
+            string instructions_4a = "4. There are no turns; the first player to click their assigned button";
+            string instructions_4b = "gets control of the board and is then able to pick their SET. [LShift]";
+            string instructions_4c = "button is for player 1, [RShift] is for player 2.";
+
+            string instructions_5a = "5. The play continues until the deck is depleted. At the end of the";
+            string instructions_5b = "game, there may be cards remaining that do not form a SET. The number of";
+            string instructions_5c = "SETs held by each player is then counted. One point is given for each";
+            string instructions_5d = "SET. The player with the highest score wins.";
 
             fontRenderer->renderText(message, 260, 560, 1.2, WHITE_VECT);
 
@@ -273,50 +287,79 @@ void Engine::render() {
             fontRenderer->renderText(instructions_1b, 25, 490, .45, WHITE_VECT);
             fontRenderer->renderText(instructions_1c, 25, 470, .45, WHITE_VECT);
 
-            fontRenderer->renderText(instructions_2a, 25, 440, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_2b, 25, 420, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_2c, 25, 400, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_2d, 25, 380, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_2e, 25, 360, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_2f, 25, 340, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2a, 25, 430, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2b, 25, 410, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2c, 25, 390, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2d, 25, 370, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2e, 25, 350, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_2f, 25, 330, .45, WHITE_VECT);
 
+            fontRenderer->renderText(instructions_3a, 25, 290, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_3b, 25, 270, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_3c, 25, 250, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_3d, 25, 230, .45, WHITE_VECT);
+
+            fontRenderer->renderText(instructions_4a, 25, 190, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_4b, 25, 170, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_4c, 25, 150, .45, WHITE_VECT);
+
+
+            fontRenderer->renderText(instructions_5a, 25, 130, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_5b, 25, 110, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_5c, 25, 90, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_5d, 25, 70, .45, WHITE_VECT);
 
 
             break;
         }
         case play: {
-            // TODO: Show current scores of each player
+
             // Render the card shapes
             for (const unique_ptr<Rect> &cardShape : cardShapes) {
                 cardShape->setUniforms();
                 cardShape->draw();
             }
+
+            // TODO: Show current scores of each player
+
+            //how to make it constantly update after every SET is picked??
+            string score_player1 = "Player 1's score: " + to_string(player1Score);
+            string score_player2 = "Player 2's score: " + to_string(player2Score);
+            fontRenderer->renderText(score_player1, 37, 50, .45, WHITE_VECT);
+            fontRenderer->renderText(score_player2, 557, 50, .45, WHITE_VECT);
+
+
         }
         case selectCards: {
-            // TODO: Show which player is selecting, show current scores of each player
+            //declare outside of loops so the string can be manipulated anywhere
+            string selecting;
+
             // Render the shapes of the outlines
             for (int hoverIndex : hoverIndices) {
                 outlineShapes[hoverIndex]->setUniforms();
                 outlineShapes[hoverIndex]->draw();
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
+
             // Render the card shapes
             for (const unique_ptr<Rect> &cardShape : cardShapes) {
                 cardShape->setUniforms();
                 cardShape->draw();
             }
+
+            //show which player is currently selecting
+            if (flagPlayer1) {
+                selecting = "Player 1 is currently selecting...";
+                fontRenderer->renderText(selecting, 37, 50, .45, WHITE_VECT);
+            }
+            if (flagPlayer2) {
+                selecting = "Player 2 is currently selecting...";
+                fontRenderer->renderText(selecting, 37, 50, .45, WHITE_VECT);
+            }
+
             // Handle the logic for whether the 3 selected cards are a set
             if (selectedCards.size() == 3) {
                 if (validSet) {
-                    // TODO: Make a message for a valid set
-                    if (flagPlayer1) {
-                        player1Score++;
-                        flagPlayer1 = false;
-                    }
-                    else if (flagPlayer2) {
-                        player2Score++;
-                        flagPlayer2 = false;
-                    }
                     validSet = false;
                 }
                 else {
@@ -324,6 +367,14 @@ void Engine::render() {
                 }
                 // Clear the selected cards and switch back to the play screen,
                 // regardless of whether they're a set
+                if (flagPlayer1) {
+                    player1Score++;
+                    flagPlayer1 = false;
+                }
+                else if (flagPlayer2) {
+                    player2Score++;
+                    flagPlayer2 = false;
+                }
                 screen = play;
                 selectedCards.clear();
                 selectedIndices.clear();
