@@ -120,7 +120,7 @@ void Engine::initShapes() {
                                                   color{RED.red, RED.green, RED.blue, RED.alpha}));
     }
 
-    int mapPos = 1;
+    int mapPos = 0;
     // Populate the deck
     for (int ii = 0; ii < 3; ii++) {
         for (int jj = 0; jj < 3; jj++) {
@@ -282,13 +282,11 @@ void Engine::render() {
         }
         case play: {
             // TODO: Show current scores of each player
-            // Render the card textures
-            for (int ii = 0; ii < cardShapes.size(); ii++) {
-                mapPos = cardsInPlay[ii].getMapPos();
-                mapU = int(mapPos / 9) + 1;
-                mapV = mapPos % 9;
-                cardShapes[ii]->setUniforms(mapU, mapV);
-                cardShapes[ii]->draw();
+            // Render the card shapes
+            for (const unique_ptr<Tex> &cardShape : cardShapes) {
+                // TODO: Add the UV coordinates here and call this
+                // cardShape->setUniforms(u, v);
+                cardShape->draw();
             }
         }
         case selectCards: {
@@ -299,14 +297,11 @@ void Engine::render() {
                 outlineShapes[hoverIndex]->draw();
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
-            // Render the card textures
-            for (int ii = 0; ii < cardShapes.size(); ii++) {
+            // Render the card shapes
+            for (const unique_ptr<Tex> &cardShape : cardShapes) {
                 // TODO: Add the UV coordinates here and call this
-                mapPos = cardsInPlay[ii].getMapPos();
-                mapU = int(mapPos / 9) + 1;
-                mapV = mapPos % 9;
-                cardShapes[ii]->setUniforms(mapU, mapV);
-                cardShapes[ii]->draw();
+                // cardShape->setUniforms();
+                cardShape->draw();
             }
             // Handle the logic for whether the 3 selected cards are a set
             if (selectedCards.size() == 3) {
