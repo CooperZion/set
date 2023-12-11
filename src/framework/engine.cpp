@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <random>
 #include "engine.h"
+#include "stb_image.h"
 
 using namespace std;
 
@@ -163,6 +164,7 @@ void Engine::processInput() {
                 hoverIndices.push_back(ii);
                 if (!mousePressed && mousePressedLastFrame && selectedCards.size() < 3) {
                     selectedCards.push_back(cardsInPlay[ii]);
+                    // Error line?
                     cardsInPlay.push_back(deck.back());
                     selectedIndices.push_back(ii);
                 }

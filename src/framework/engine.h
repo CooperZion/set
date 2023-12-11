@@ -43,6 +43,8 @@ class Engine {
         vector<unique_ptr<Rect>> cardShapes;
         vector<unique_ptr<Rect>> outlineShapes;
         unique_ptr<Rect> cursor;
+
+        // Index vectors
         vector<int> hoverIndices;
         vector<int> selectedIndices;
 
