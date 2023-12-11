@@ -74,7 +74,8 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
                                ${VENDORS_SOURCES}
         src/framework/fontRenderer.cpp
         src/stb_image.h
-        src/STB_Image_Implementation.cpp
+        src/shapes/tex.cpp
+        src/shapes/tex.h
 )
 
 target_link_libraries(${PROJECT_NAME} glfw freetype)

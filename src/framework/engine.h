@@ -10,6 +10,7 @@
 #include "../shapes/circle.h"
 #include "../shapes/rect.h"
 #include "../shapes/shape.h"
+#include "../shapes/tex.h"
 #include "card.h"
 #include "fontRenderer.h"
 
@@ -45,7 +46,7 @@ class Engine {
         vector<card> selectedCards;
 
         // Shapes
-        vector<unique_ptr<Rect>> cardShapes;
+        vector<unique_ptr<Tex>> cardShapes;
         vector<unique_ptr<Rect>> outlineShapes;
         unique_ptr<Rect> cursor;
 

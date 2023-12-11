@@ -30,6 +30,19 @@ void Shape::initVBO() {
     glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VBO
 }
 
+// Initialize VTBO
+void Shape::initVTBO() {
+    // Generate VBO, bind it to VAO, and copy vertices data into it
+    glGenBuffers(1, &VTBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VTBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    // Set the vertex attribute pointers (4 floats per vertex (x, y, u, v))
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0); // Enable the vertex attribute at location 0
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VBO
+}
+
 // Initialize EBO
 void Shape::initEBO() {
     glGenBuffers(1, &EBO);
@@ -39,10 +52,6 @@ void Shape::initEBO() {
 }
 
 void Shape::setUniforms() const {
-    // If you want to use a custom shader, you have to set it and call it's Use() function here.
-    // Since we are using the same shader for all shapes, we can just set it once in the constructor.
-    //this->shader.use();
-
     // Define the model matrix for the shape as a 4x4 identity matrix
     mat4 model = mat4(1.0f);
     // The model matrix is used to transform the vertices of the shape in relation to the world space.
@@ -53,10 +62,6 @@ void Shape::setUniforms() const {
     // Set the model matrix and color uniform variables in the shader
     this->shader.setMatrix4("model", model);
     this->shader.setVector4f("shapeColor", color.vec);
-}
-
-void Shape::changeUniforms() const {
-    glGetUniformLocation(this->shader.ID, "tex");
 }
 
 // Setters
