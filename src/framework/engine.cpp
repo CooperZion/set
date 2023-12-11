@@ -74,7 +74,7 @@ void Engine::initShaders() {
                                                  "../res/shaders/card.frag",
                                                  nullptr, "card");
     cardShader.use();
-    cardShader.setMatrix4("tex", this->PROJECTION);
+    cardShader.setMatrix4("text", this->PROJECTION);
 
     // Configure text shader and renderer
     textShader = shaderManager->loadShader("../res/shaders/text.vert", "../res/shaders/text.frag", nullptr, "text");
@@ -82,11 +82,11 @@ void Engine::initShaders() {
 
     // Set uniforms
     textShader.use().setVector2f("vertex", vec4(100, 100, .5, .5));
-    cardShader.use().setMatrix4("tex", this->PROJECTION);
+    cardShader.use().setMatrix4("projection", this->PROJECTION);
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
 
     // Texturing magic
-    const char *filename = "res/cards/diamonds/1EPD.png";
+    const char *filename = "card_map.png";
     imgObject = stbi_load(filename, &imgX, &imgY, &imgN, 4);
 
     glGenTextures(1, &textureObject);
@@ -114,19 +114,18 @@ void Engine::initShapes() {
     }
     for (int ii = 0; ii < 12; ii++) {
         vector<int> coordVect = coordinateMatrix[ii];
-        cardShapes.push_back(make_unique<Tex>(cardShader, vec2{coordVect[0], coordVect[1]}, vec2{350, 225},
+        cardShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{350, 225},
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
         outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{370, 245},
                                                   color{RED.red, RED.green, RED.blue, RED.alpha}));
     }
 
-    int mapPos = 1;
     // Populate the deck
     for (int ii = 0; ii < 3; ii++) {
         for (int jj = 0; jj < 3; jj++) {
             for (int kk = 0; kk < 3; kk++) {
                 for (int ll = 0; ll < 3; ll++) {
-                    deck.emplace_back(ii, jj, kk, ll, mapPos);
+                    deck.emplace_back(ii, jj, kk, ll);
                 }
             }
         }
@@ -182,8 +181,8 @@ void Engine::processInput() {
     else if (screen == selectCards) {
         // Variable to hold mouse press status
         bool mousePressed = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-        for (int ii = 0; ii < outlineShapes.size(); ii++) {
-            if (outlineShapes[ii]->isOverlapping(*cursor)) {
+        for (int ii = 0; ii < cardShapes.size(); ii++) {
+            if (cardShapes[ii]->isOverlapping(*cursor)) {
                 hoverIndices.push_back(ii);
                 if (!mousePressed && mousePressedLastFrame && selectedCards.size() < 3) {
                     selectedCards.push_back(cardsInPlay[ii]);
@@ -245,6 +244,7 @@ void Engine::render() {
 
     switch (screen) {
         case start: {
+            // TODO: Make start screen
             string message = "Let's Play Set!";
             string message1 = "Press [S] to start game, [I] for instructions";
             fontRenderer->renderText(message, 192, 300, 1.2, WHITE_VECT);
@@ -252,6 +252,7 @@ void Engine::render() {
             break;
         }
         case instructions: {
+            // TODO: Make instructions screen
             string message = "Instructions";
             // newline isn't working????
             string instructions_1a = "1. The object of the game is to identify a SET of 3 cards from 12 cards ";
@@ -278,18 +279,17 @@ void Engine::render() {
             fontRenderer->renderText(instructions_2e, 25, 360, .45, WHITE_VECT);
             fontRenderer->renderText(instructions_2f, 25, 340, .45, WHITE_VECT);
 
+
+
             break;
         }
         case play: {
             // TODO: Show current scores of each player
-            // Render the card textures
-//            for (int ii = 0; ii < cardShapes.size(); ii++) {
-//                mapPos = cardsInPlay[ii].getMapPos();
-//                mapU = int(mapPos / 9) + 1;
-//                mapV = mapPos % 9;
-//                cardShapes[ii]->setUniforms(mapU, mapV);
-//                cardShapes[ii]->draw();
-//            }
+            // Render the card shapes
+            for (const unique_ptr<Rect> &cardShape : cardShapes) {
+                cardShape->setUniforms();
+                cardShape->draw();
+            }
         }
         case selectCards: {
             // TODO: Show which player is selecting, show current scores of each player
@@ -299,14 +299,10 @@ void Engine::render() {
                 outlineShapes[hoverIndex]->draw();
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
-            // Render the card textures
-            for (int ii = 0; ii < cardShapes.size(); ii++) {
-                // TODO: Add the UV coordinates here and call this
-//                mapPos = cardsInPlay[ii].getMapPos();
-//                mapU = int(mapPos / 9) + 1;
-//                mapV = mapPos % 9;
-//                cardShapes[ii]->setUniforms(mapU, mapV);
-//                cardShapes[ii]->draw();
+            // Render the card shapes
+            for (const unique_ptr<Rect> &cardShape : cardShapes) {
+                cardShape->setUniforms();
+                cardShape->draw();
             }
             // Handle the logic for whether the 3 selected cards are a set
             if (selectedCards.size() == 3) {
