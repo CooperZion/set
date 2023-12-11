@@ -75,7 +75,7 @@ void Engine::initShaders() {
                                                  "../res/shaders/card.frag",
                                                  nullptr, "card");
     cardShader.use();
-    cardShader.setMatrix4("text", this->PROJECTION);
+    cardShader.setMatrix4("tex", this->PROJECTION);
 
     // Configure text shader and renderer
     textShader = shaderManager->loadShader("../res/shaders/text.vert", "../res/shaders/text.frag", nullptr, "text");

@@ -25,7 +25,7 @@ protected:
     struct color color;
 
     /// @brief The Vertex Array Object, Vertex Buffer Object, and Element Buffer Object of the shape.
-    unsigned int VAO, VBO, EBO;
+    unsigned int VAO, VTAO, VBO, EBO;
 
     /// @brief The vertices of the shape
     vector<float> vertices;
@@ -138,8 +138,6 @@ protected:
         /// @brief Pure virtual function to draw the shape.
         virtual void draw() const = 0;
 
-
-    void changeUniforms() const;
 };
 
 #endif //GRAPHICS_SHAPE_H

@@ -39,10 +39,6 @@ void Shape::initEBO() {
 }
 
 void Shape::setUniforms() const {
-    // If you want to use a custom shader, you have to set it and call it's Use() function here.
-    // Since we are using the same shader for all shapes, we can just set it once in the constructor.
-    //this->shader.use();
-
     // Define the model matrix for the shape as a 4x4 identity matrix
     mat4 model = mat4(1.0f);
     // The model matrix is used to transform the vertices of the shape in relation to the world space.
