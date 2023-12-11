@@ -67,6 +67,7 @@ class Engine {
         bool validSet = false;
         bool setCanBeMade = true;
         bool extraCards = false;
+        string selecting;
 
     public:
         /// @brief Constructor for the Engine class.
