@@ -8,6 +8,6 @@
 #define MAP_X (CARD_X * CARD_COLS)
 #define MAP_Y (CARD_Y * CARD_ROWS)
 #define PIXEL_U (1 / MAP_X)
-#define PIXEL_V (1 / MAP_Y*)
+#define PIXEL_V (1 / MAP_Y)
 
 #endif //GRAPHICS_CONFIG_H
