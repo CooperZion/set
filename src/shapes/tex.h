@@ -1,5 +1,6 @@
 #include "shape.h"
 #include "../framework/shader.h"
+#include "../framework/config.h"
 #include <iostream>
 using glm::vec2, glm::vec3;
 

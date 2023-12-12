@@ -13,7 +13,7 @@ private:
     int number;
     int mapPos;
 public:
-    card(int color, int shape, int fill, int number, int mapPos);
+    card(int shape, int color, int fill, int number, int mapPos);
     int getColor();
     int getShape();
     int getFill();

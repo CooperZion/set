@@ -76,6 +76,7 @@ add_executable(${PROJECT_NAME} ${PROJECT_SOURCES} ${PROJECT_HEADERS}
         src/stb_image.h
         src/shapes/tex.cpp
         src/shapes/tex.h
+        src/framework/config.h
 )
 
 target_link_libraries(${PROJECT_NAME} glfw freetype)

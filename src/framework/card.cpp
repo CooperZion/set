@@ -2,9 +2,9 @@
 
 using namespace std;
 
-card::card(int c, int s, int f, int n, int p) {
-    setColor(c);
+card::card(int s, int c, int f, int n, int p) {
     setShape(s);
+    setColor(c);
     setFill(f);
     setNumber(n);
     setMapPos(p);

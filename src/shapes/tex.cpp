@@ -67,16 +67,28 @@ float Tex::getTop() const         { return pos.y + (size.y / 2); }
 float Tex::getBottom() const      { return pos.y - (size.y / 2); }
 
 void Tex::setUniforms(float u, float v) {
+    float bottom_right_u = CARD_X * u;
+    float bottom_right_v = CARD_Y * v;
+
+    float bottom_left_u = bottom_right_u - (CARD_X * PIXEL_U);
+    float bottom_left_v = bottom_right_v;
+
+    float top_left_u = bottom_right_u - (CARD_X * PIXEL_U);
+    float top_left_v = bottom_right_v - (CARD_Y * PIXEL_V);
+
+    float top_right_u = bottom_right_u;
+    float top_right_v = bottom_right_v - (CARD_Y * PIXEL_V);
+
     // top left
-    vertices[2] = u;
-    vertices[3] = v;
+    vertices[2] = top_left_u;
+    vertices[3] = top_left_v;
     // top right
-    vertices[2] = u;
-    vertices[3] = v;
+    vertices[6] = top_right_u;
+    vertices[7] = top_right_v;
     // bottom left
-    vertices[2] = u;
-    vertices[3] = v;
+    vertices[10] = bottom_left_u;
+    vertices[11] = bottom_left_v;
     // bottom right
-    vertices[2] = u;
-    vertices[3] = v;
+    vertices[14] = bottom_right_u;
+    vertices[15] = bottom_right_v;
 }
