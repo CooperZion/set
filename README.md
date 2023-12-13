@@ -19,16 +19,21 @@ The program utilizes the following concepts:
 - A bunch of other Module 4 stuff
 
 ## Operating System Compatibility
-The project can successfully run on any OS.
+The project can theoretically run on any OS, but has only been tested on Windows.
 
 ## Installations
-No additional installations are required to run the program other than 
+No additional installations should be required to run the program other than 
 
 ## Citations
-All code in this project is authored by the geniuses cooper and mason ;)
-- www.cooperandmasonaregeniuses.com
-- ^^get it, because we are geniuses
+- Much of the base for this code came from the OpenGL starting code from module 4 projects. 
+- Several of the files in the project were written from scratch by us.
+- The image loader, which takes a png and loads it into a 2D array for OpenGL to texture with comes from [here](https://github.com/nothings/stb/blob/master/stb_image.h).
+- The vertex and fragment shaders for the cards come from [here](https://learnopengl.com/Getting-started/Textures), where I learned the basics of texturing with OpenGL, though I don't believe I copied any other code.
+- I created the images for the cards myself in Adobe Illustrator, and combined them all into the atlas png. 
 
 ## Points Justification
-We believe the project deserves at least 150% (250 points) based on the following rubric criteria:
-- [justification]
+We believe the project deserves 150 points because the entirety of the code to make the game work in OpenGL exists. The logic, the custom classes, the framework, all exists. 
+Additionally, all the code for the texturing is not only written, but implemented, and can be seen in the custom tex.cpp and tex.h files, which I wrote from scratch to extend shape. similarly to rect.
+Despite the texturing not being functional, I believe it's very close to being functional, with some troubleshooting still needed, but not much writing of code.
+I believe all of these reasons combined justifies the loss of 50 points, because, as I said, about 95% of the project is polished and finished, it just can't be seen outside the source code. 
+I intend to continue working on this project, it **will** work. 
