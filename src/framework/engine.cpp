@@ -78,10 +78,11 @@ void Engine::initShaders() {
 
     // Set uniforms
     textShader.use().setVector2f("vertex", vec4(100, 100, .5, .5));
-    cardShader.use().setMatrix4("tex", this->PROJECTION);
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
+    cardShader.use().setMatrix4("tex", this->PROJECTION);
 
     // Texturing magic
+    glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &textureObject);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureObject);

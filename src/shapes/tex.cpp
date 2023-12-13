@@ -69,18 +69,19 @@ float Tex::getBottom() const      { return pos.y - (size.y / 2); }
 void Tex::setVertices(int mapPos) {
     int v = ceil(mapPos / 9);
     int u = mapPos % 9;
+    if (u == 0) {u = 9;}
 
     float top_right_u = CARD_X * u;
     float top_right_v = CARD_Y * v;
 
-    float bottom_left_u = top_right_u - (CARD_X * PIXEL_U);
-    float bottom_left_v  = top_right_v - (CARD_Y * PIXEL_V);
+    float bottom_left_u = top_right_u - CARD_X;
+    float bottom_left_v  = top_right_v - CARD_Y;
 
-    float top_left_u = top_right_u - (CARD_X * PIXEL_U);
+    float top_left_u = top_right_u - CARD_X;
     float top_left_v = top_right_v;
 
     float bottom_right_u = top_right_u;
-    float bottom_right_v = top_right_v - (CARD_Y * PIXEL_V);
+    float bottom_right_v = top_right_v - CARD_Y;
 
     // top left
     vertices[2] = float(top_left_u / MAP_X);
