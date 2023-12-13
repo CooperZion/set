@@ -73,6 +73,8 @@ class Engine {
         bool extraCards = false;
         string selecting;
 
+        int totalScore = 0;
+
     public:
         /// @brief Constructor for the Engine class.
         /// @details Initializes window and shaders.
