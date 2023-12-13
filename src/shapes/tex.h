@@ -8,7 +8,7 @@ using glm::vec2, glm::vec3;
 #define GRAPHICS_TEX_H
 
 
-class Tex : Shape {
+class Tex : public Shape {
 private:
     /// @brief Initializes the vertices and indices of the square
     void initVectors();
@@ -44,7 +44,7 @@ public:
     bool isOverlapping(const Tex &other) const;
     bool isOverlapping(const Shape &other) const;
 
-    void setUniforms(float u, float v);
+    void setVertices(int mapPos);
 };
 
 

@@ -26,6 +26,7 @@ public:
     void setMapPos(int pos);
     bool isSetWith(card *o1, card *o2);
     friend bool operator == (card &o1, card &o2);
+    friend bool operator != (card &o1, card &o2);
 };
 
 #endif //GRAPHICS_CARD_H

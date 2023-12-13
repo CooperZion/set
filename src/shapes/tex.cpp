@@ -15,7 +15,7 @@ Tex::Tex(Shader &shader, vec2 pos, float width, vec4 color)
 
 Tex::~Tex() {
     glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &VTBO);
 }
 
 void Tex::draw() const {
@@ -26,10 +26,10 @@ void Tex::draw() const {
 
 void Tex::initVectors() {
     this->vertices.insert(vertices.end(), {
-            -0.5f, 0.5f, 0.0f, 0.0f,  // Top left
-            0.5f, 0.5f, 0.0f, 0.0f,   // Top right
+            -0.5f, 0.5f, 0.0f, 1.0f,  // Top left
+            0.5f, 0.5f, 1.0f, 1.0f,   // Top right
             -0.5f, -0.5f, 0.0f, 0.0f, // Bottom left
-            0.5f, -0.5f, 0.0f, 0.0f   // Bottom right
+            0.5f, -0.5f, 1.0f, 0.0f   // Bottom right
 
     });
 
@@ -53,7 +53,7 @@ bool Tex::isOverlapping(const Tex &other) const {
 }
 
 bool Tex::isOverlapping(const Shape &other) const {
-    // Dynamic cast to check if the other shape is a Rect
+    // Dynamic cast to check if the other shape is a Tex
     const Tex *otherTex = dynamic_cast<const Tex *>(&other);
     if (otherTex) {
         return isOverlapping(*this, *otherTex);
@@ -66,29 +66,32 @@ float Tex::getRight() const       { return pos.x + (size.x / 2); }
 float Tex::getTop() const         { return pos.y + (size.y / 2); }
 float Tex::getBottom() const      { return pos.y - (size.y / 2); }
 
-void Tex::setUniforms(float u, float v) {
-    float bottom_right_u = CARD_X * u;
-    float bottom_right_v = CARD_Y * v;
+void Tex::setVertices(int mapPos) {
+    int v = ceil(mapPos / 9);
+    int u = mapPos % 9;
 
-    float bottom_left_u = bottom_right_u - (CARD_X * PIXEL_U);
-    float bottom_left_v = bottom_right_v;
+    float top_right_u = CARD_X * u;
+    float top_right_v = CARD_Y * v;
 
-    float top_left_u = bottom_right_u - (CARD_X * PIXEL_U);
-    float top_left_v = bottom_right_v - (CARD_Y * PIXEL_V);
+    float bottom_left_u = top_right_u - (CARD_X * PIXEL_U);
+    float bottom_left_v  = top_right_v - (CARD_Y * PIXEL_V);
 
-    float top_right_u = bottom_right_u;
-    float top_right_v = bottom_right_v - (CARD_Y * PIXEL_V);
+    float top_left_u = top_right_u - (CARD_X * PIXEL_U);
+    float top_left_v = top_right_v;
+
+    float bottom_right_u = top_right_u;
+    float bottom_right_v = top_right_v - (CARD_Y * PIXEL_V);
 
     // top left
-    vertices[2] = top_left_u;
-    vertices[3] = top_left_v;
+    vertices[2] = float(top_left_u / MAP_X);
+    vertices[3] = float(top_left_v / MAP_Y);
     // top right
-    vertices[6] = top_right_u;
-    vertices[7] = top_right_v;
+    vertices[6] = float(top_right_u / MAP_X);
+    vertices[7] = float(top_right_v / MAP_Y);
     // bottom left
-    vertices[10] = bottom_left_u;
-    vertices[11] = bottom_left_v;
+    vertices[10] = float(bottom_left_u / MAP_X);
+    vertices[11] = float(bottom_left_v / MAP_Y);
     // bottom right
-    vertices[14] = bottom_right_u;
-    vertices[15] = bottom_right_v;
+    vertices[14] = float(bottom_right_u / MAP_X);
+    vertices[15] = float(bottom_right_v / MAP_Y);
 }

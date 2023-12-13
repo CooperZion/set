@@ -1,8 +1,4 @@
-
-#include <algorithm>
-#include <random>
 #include "engine.h"
-#include "stb_image.h"
 
 using namespace std;
 
@@ -72,7 +68,7 @@ void Engine::initShaders() {
 
     cardShader = this->shaderManager->loadShader("../res/shaders/card.vert",
                                                  "../res/shaders/card.frag",
-                                                 nullptr, "card");
+                                                 nullptr, "tex");
     cardShader.use();
     cardShader.setMatrix4("tex", this->PROJECTION);
 
@@ -86,20 +82,21 @@ void Engine::initShaders() {
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
 
     // Texturing magic
-    const char *filename = "res/cards/diamonds/1EPD.png";
-    imgObject = stbi_load(filename, &imgX, &imgY, &imgN, 4);
-
     glGenTextures(1, &textureObject);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, textureObject);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgX, imgY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgObject);
-    free(imgObject);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    char filename[] = "../res/cardAtlas.png";
+    imgObject = stbi_load(filename, &imgX, &imgY, &imgN, 4);
+    if (imgObject) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgX, imgY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgObject);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
 }
 
 void Engine::initShapes() {
@@ -125,7 +122,8 @@ void Engine::initShapes() {
         for (int jj = 0; jj < 3; jj++) {
             for (int kk = 0; kk < 3; kk++) {
                 for (int ll = 0; ll < 3; ll++) {
-                    deck.emplace_back(ii, jj, kk, ll, mapPos);
+                    int val = (ii + 1) * (jj + 1) * (kk + 1) * (ll + 1);
+                    deck.emplace_back(ii, jj, kk, ll, val);
                 }
             }
         }
@@ -185,10 +183,10 @@ void Engine::processInput() {
             if (outlineShapes[ii]->isOverlapping(*cursor)) {
                 hoverIndices.push_back(ii);
                 if (!mousePressed && mousePressedLastFrame && selectedCards.size() < 3) {
-                    selectedCards.push_back(cardsInPlay[ii]);
-                    // Error line?
-                    cardsInPlay.push_back(deck.back());
-                    selectedIndices.push_back(ii);
+                    if (selectedCards.empty() || selectedCards[selectedCards.size() - 1] != cardsInPlay[ii]) {
+                        selectedCards.push_back(cardsInPlay[ii]);
+                        selectedIndices.push_back(ii);
+                    }
                 }
             }
         }
@@ -251,7 +249,6 @@ void Engine::render() {
             break;
         }
         case instructions: {
-            // TODO: Make instructions screen
             string message = "Instructions";
 
             string instructions_1a = "1. The object of the game is to identify a SET of 3 cards from the cards ";
@@ -306,16 +303,14 @@ void Engine::render() {
             fontRenderer->renderText(instructions_5c, 25, 90, .45, WHITE_VECT);
             fontRenderer->renderText(instructions_5d, 25, 70, .45, WHITE_VECT);
 
-
             break;
         }
         case play: {
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
                 mapPos = cardsInPlay[ii].getMapPos();
-                mapU = int(mapPos / 9) + 1;
-                mapV = mapPos % 9;
-                cardShapes[ii]->setUniforms(mapU, mapV);
+                cardShapes[ii]->setVertices(mapPos);
+                cardShapes[ii]->setUniforms();
                 cardShapes[ii]->draw();
             }
 
@@ -325,7 +320,6 @@ void Engine::render() {
             fontRenderer->renderText(score_player2, 557, 50, .45, WHITE_VECT);
         }
         case selectCards: {
-            // TODO: Show which player is selecting, show current scores of each player
             // Render the shapes of the outlines
             for (int hoverIndex : hoverIndices) {
                 outlineShapes[hoverIndex]->setUniforms();
@@ -334,11 +328,9 @@ void Engine::render() {
             }
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
-                // TODO: Add the UV coordinates here and call this
                 mapPos = cardsInPlay[ii].getMapPos();
-                mapU = int(mapPos / 9) + 1;
-                mapV = mapPos % 9;
-                cardShapes[ii]->setUniforms(mapU, mapV);
+                cardShapes[ii]->setVertices(mapPos);
+                cardShapes[ii]->setUniforms();
                 cardShapes[ii]->draw();
             }
 
@@ -351,7 +343,6 @@ void Engine::render() {
                 selecting = "Player 2 is currently selecting...";
                 fontRenderer->renderText(selecting, 37, 50, .45, WHITE_VECT);
             }
-
 
             // Handle the logic for whether the 3 selected cards are a set
             if (selectedCards.size() == 3) {

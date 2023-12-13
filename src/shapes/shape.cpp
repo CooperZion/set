@@ -32,7 +32,7 @@ void Shape::initVBO() {
 
 // Initialize VTBO
 void Shape::initVTBO() {
-    // Generate VBO, bind it to VAO, and copy vertices data into it
+    // Generate VTBO, bind it to VAO, and copy vertices data into it
     glGenBuffers(1, &VTBO);
     glBindBuffer(GL_ARRAY_BUFFER, VTBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
@@ -40,7 +40,7 @@ void Shape::initVTBO() {
     // Set the vertex attribute pointers (4 floats per vertex (x, y, u, v))
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0); // Enable the vertex attribute at location 0
-    glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VBO
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VTBO
 }
 
 // Initialize EBO

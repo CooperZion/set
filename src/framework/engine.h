@@ -4,6 +4,8 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+#include <algorithm>
+#include <random>
 #include <GLFW/glfw3.h>
 
 #include "shaderManager.h"
@@ -13,6 +15,7 @@
 #include "../shapes/tex.h"
 #include "card.h"
 #include "fontRenderer.h"
+#include "stb_image.h"
 
 using std::vector, std::unique_ptr, std::make_unique, glm::ortho, glm::mat4, glm::vec3, glm::vec4;
 
