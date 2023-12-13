@@ -83,7 +83,7 @@ void Engine::initShaders() {
 
     // Texturing magic
     glGenTextures(1, &textureObject);
-    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, textureObject);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -92,13 +92,9 @@ void Engine::initShaders() {
     char filename[] = "../res/cardAtlas.png";
     imgObject = stbi_load(filename, &imgX, &imgY, &imgN, 4);
     if (imgObject) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgX, imgY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgObject);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgX, imgY, 0, GL_RGB, GL_UNSIGNED_BYTE, imgObject);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-
-    glBindTexture(GL_TEXTURE_2D, textureObject);
-    glEnable(GL_TEXTURE_2D);
-
 }
 
 void Engine::initShapes() {
@@ -321,6 +317,7 @@ void Engine::render() {
 
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
+                glBindTexture(GL_TEXTURE_2D, textureObject);
                 cardShader.use();
                 mapPos = cardsInPlay[ii].getMapPos();
                 cardShapes[ii]->setVertices(mapPos);
@@ -350,6 +347,7 @@ void Engine::render() {
 
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
+                glBindTexture(GL_TEXTURE_2D, textureObject);
                 cardShader.use();
                 mapPos = cardsInPlay[ii].getMapPos();
                 cardShapes[ii]->setVertices(mapPos);
