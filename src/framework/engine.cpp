@@ -116,6 +116,8 @@ void Engine::initShapes() {
                                            color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
         outlineShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{370, 245},
                                                   color{RED.red, RED.green, RED.blue, RED.alpha}));
+        whiteShapes.push_back(make_unique<Rect>(shapeShader, vec2{coordVect[0], coordVect[1]}, vec2{350, 225},
+                                                  color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
     }
 
     // Populate the deck
@@ -307,6 +309,11 @@ void Engine::render() {
             break;
         }
         case play: {
+            for (auto &card : whiteShapes) {
+                card->setUniforms();
+                card->draw();
+            }
+
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
                 mapPos = cardsInPlay[ii].getMapPos();
@@ -327,6 +334,12 @@ void Engine::render() {
                 outlineShapes[hoverIndex]->draw();
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
+
+            for (auto &card : whiteShapes) {
+                card->setUniforms();
+                card->draw();
+            }
+
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
                 mapPos = cardsInPlay[ii].getMapPos();

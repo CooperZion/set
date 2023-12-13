@@ -51,6 +51,7 @@ class Engine {
         // Shapes
         vector<unique_ptr<Tex>> cardShapes;
         vector<unique_ptr<Rect>> outlineShapes;
+        vector<unique_ptr<Rect>> whiteShapes;
         unique_ptr<Rect> cursor;
 
         // Index vectors
