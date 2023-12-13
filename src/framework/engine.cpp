@@ -387,11 +387,11 @@ void Engine::render() {
         }
         case over: {
             if (player1Score > player2Score) {
-                fontRenderer->renderText("Player 1 Wins!", 37, 150, 1.4, WHITE_VECT);
+                fontRenderer->renderText("Player 1 wins!", 200, 300, 1.2, WHITE_VECT);
             }
 
             if (player2Score > player1Score) {
-                fontRenderer->renderText("Player 2 Wins!", 37, 150, 1.4, WHITE_VECT);
+                fontRenderer->renderText("Player 2 Wins!", 200, 150, 1.4, WHITE_VECT);
             }
 
             break;

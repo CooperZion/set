@@ -22,7 +22,7 @@ The program utilizes the following concepts:
 The project can theoretically run on any OS, but has only been tested on Windows.
 
 ## Installations
-No additional installations should be required to run the program other than 
+No additional installations should be required to run the program.
 
 ## Citations
 - Much of the base for this code came from the OpenGL starting code from module 4 projects. 
