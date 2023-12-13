@@ -311,16 +311,17 @@ void Engine::render() {
         }
         case play: {
             for (auto &card : whiteShapes) {
+                shapeShader.use();
                 card->setUniforms();
                 card->draw();
             }
 
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
+                cardShader.use();
                 mapPos = cardsInPlay[ii].getMapPos();
                 cardShapes[ii]->setVertices(mapPos);
                 cardShapes[ii]->setUniforms();
-                glBindTexture(GL_TEXTURE_2D, textureObject);
                 cardShapes[ii]->draw();
             }
 
@@ -332,22 +333,24 @@ void Engine::render() {
         case selectCards: {
             // Render the shapes of the outlines
             for (int hoverIndex : hoverIndices) {
+                shapeShader.use();
                 outlineShapes[hoverIndex]->setUniforms();
                 outlineShapes[hoverIndex]->draw();
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
             }
 
             for (auto &card : whiteShapes) {
+                shapeShader.use();
                 card->setUniforms();
                 card->draw();
             }
 
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
+                cardShader.use();
                 mapPos = cardsInPlay[ii].getMapPos();
                 cardShapes[ii]->setVertices(mapPos);
                 cardShapes[ii]->setUniforms();
-                glBindTexture(GL_TEXTURE_2D, textureObject);
                 cardShapes[ii]->draw();
             }
 
