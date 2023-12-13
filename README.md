@@ -32,8 +32,10 @@ No additional installations should be required to run the program.
 - I created the images for the cards myself in Adobe Illustrator, and combined them all into the atlas png. 
 
 ## Points Justification
-We believe the project deserves 175 points because the entirety of the code to make the game work in OpenGL exists. The logic, the custom classes, the framework, all exists. 
+~~We believe the project deserves 150 points because the entirety of the code to make the game work in OpenGL exists. The logic, the custom classes, the framework, all exists. 
 Additionally, all the code for the texturing is not only written, but implemented, and can be seen in the custom tex.cpp and tex.h files, which I wrote from scratch to extend shape. similarly to rect.
 Despite the texturing not being functional, I believe it's very close to being functional, with some troubleshooting still needed, but not much writing of code.
-I believe all of these reasons combined justifies the loss of 25 points, because, as I said, about 95% of the project is polished and finished, it just can't be seen outside the source code. 
-I intend to continue working on this project, it **will** work. 
+I believe all of these reasons combined justifies the loss of 50 points, because, as I said, about 95% of the project is polished and finished, it just can't be seen outside the source code. 
+I intend to continue working on this project, it **will** work.~~
+
+The project is fully working in every way!!! The only thing that isn't in it is the extra cards feature, but that was ancillary to begin with. I think we deserve 200 points!

@@ -10,6 +10,7 @@ const color GREEN(0, 1, 0);
 
 // Color vectors
 vec3 WHITE_VECT = {WHITE.red, WHITE.green, WHITE.blue};
+vec3 BLACK_VECT = {BLACK.red, BLACK.green, BLACK.blue};
 
 // game state objects
 enum state {start, instructions, play, selectCards, over};
@@ -92,7 +93,7 @@ void Engine::initShaders() {
     char filename[] = "../res/cardAtlas.png";
     imgObject = stbi_load(filename, &imgX, &imgY, &imgN, 4);
     if (imgObject) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgX, imgY, 0, GL_RGB, GL_UNSIGNED_BYTE, imgObject);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgX, imgY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgObject);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 }
@@ -117,22 +118,32 @@ void Engine::initShapes() {
                                                   color{WHITE.red, WHITE.green, WHITE.blue, WHITE.alpha}));
     }
 
+    int count = 1;
     // Populate the deck
     for (int ii = 0; ii < 3; ii++) {
         for (int jj = 0; jj < 3; jj++) {
             for (int kk = 0; kk < 3; kk++) {
                 for (int ll = 0; ll < 3; ll++) {
                     int val = (ii + 1) * (jj + 1) * (kk + 1) * (ll + 1);
-                    deck.emplace_back(ii, jj, kk, ll, val);
+                    deck.emplace_back(ii, jj, kk, ll, count++);
                 }
             }
         }
     }
     // Shuffle the card vector
     std::shuffle(std::begin(deck), std::end(deck), std::mt19937(std::random_device()()));
+    std::shuffle(std::begin(deck), std::end(deck), std::mt19937(std::random_device()()));
+    std::shuffle(std::begin(deck), std::end(deck), std::mt19937(std::random_device()()));
     // Grab the first 12 cards to begin the game with
-    for (int ii = 0; ii < 12; ii++) {
-        cardsInPlay.push_back(deck[ii]);
+    while (cardsInPlay.size() < 12) {
+        bool add = true;
+        for (auto &card : cardsInPlay) {
+            if (card == deck.front()) {add = false;}
+        }
+        if (add) {
+            cardsInPlay.push_back(deck.front());
+            deck.erase(deck.begin());
+        }
     }
 }
 
@@ -205,7 +216,9 @@ void Engine::update() {
     // Logic to deal with selected cards in the selection screen
     if (!selectedIndices.empty()) {
         // Check to see if there are 3 cards selected, if there are, see if it's a set
-        if (selectedCards.size() == 3) { validSet = selectedCards[0].isSetWith(&selectedCards[1], &selectedCards[2]);}
+        if (selectedCards.size() == 3) {
+            validSet = selectedCards[0].isSetWith(&selectedCards[1], &selectedCards[2]);
+        }
         // Change the outline of selected cards to green
         for (int selectedIndex: selectedIndices) {outlineShapes[selectedIndex]->setColor(GREEN);}
     }
@@ -229,6 +242,7 @@ void Engine::update() {
     // This is the only way the game ends
     if (!setCanBeMade && deck.empty()) {
         screen = over;
+        gameOver = true;
     }
 
 }
@@ -309,12 +323,6 @@ void Engine::render() {
             break;
         }
         case play: {
-            for (auto &card : whiteShapes) {
-                shapeShader.use();
-                card->setUniforms();
-                card->draw();
-            }
-
             // Render the card textures
             for (int ii = 0; ii < cardShapes.size(); ii++) {
                 glBindTexture(GL_TEXTURE_2D, textureObject);
@@ -337,12 +345,6 @@ void Engine::render() {
                 outlineShapes[hoverIndex]->setUniforms();
                 outlineShapes[hoverIndex]->draw();
                 if (outlineShapes[hoverIndex]->getGreen() == 0) {hoverIndices.pop_back();}
-            }
-
-            for (auto &card : whiteShapes) {
-                shapeShader.use();
-                card->setUniforms();
-                card->draw();
             }
 
             // Render the card textures
@@ -368,13 +370,14 @@ void Engine::render() {
             // Handle the logic for whether the 3 selected cards are a set
             if (selectedCards.size() == 3) {
                 if (validSet) {
-                    // TODO: Make a message for a valid set
                     if (flagPlayer1) {player1Score++;}
                     else if (flagPlayer2) {player2Score++;}
                     validSet = false;
-                }
-                else {
-                    // TODO: Make a message for invalid set
+
+                    for (int index : selectedIndices) {
+                        cardsInPlay[index] = deck.front();
+                        deck.erase(deck.begin());
+                    }
                 }
                 if (flagPlayer1) {flagPlayer1 = false;}
                 else if (flagPlayer2) {flagPlayer2 = false;}
@@ -386,14 +389,13 @@ void Engine::render() {
             }
         }
         case over: {
-            if (player1Score > player2Score) {
+            if (player1Score > player2Score && gameOver) {
                 fontRenderer->renderText("Player 1 wins!", 200, 300, 1.2, WHITE_VECT);
             }
 
-            if (player2Score > player1Score) {
-                fontRenderer->renderText("Player 2 Wins!", 200, 150, 1.4, WHITE_VECT);
+            else if (player2Score > player1Score && gameOver) {
+                fontRenderer->renderText("Player 2 wins!", 200, 150, 1.2, WHITE_VECT);
             }
-
             break;
         }
     }

@@ -69,7 +69,7 @@ float Tex::getTop() const         { return pos.y + (size.y / 2); }
 float Tex::getBottom() const      { return pos.y - (size.y / 2); }
 
 void Tex::setVertices(int mapPos) {
-    int v = ceil(mapPos / 9);
+    int v = ceil(mapPos / 9.1);
     int u = mapPos % 9;
     if (u == 0) {u = 9;}
 
@@ -97,4 +97,7 @@ void Tex::setVertices(int mapPos) {
     // bottom right
     vertices[30] = float(bottom_right_u / MAP_X);
     vertices[31] = float(bottom_right_v / MAP_Y);
+    glBindBuffer(GL_ARRAY_BUFFER, VTBO);
+    glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, 0); // Unbind VTBO
 }

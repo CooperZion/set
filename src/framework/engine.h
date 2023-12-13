@@ -71,6 +71,7 @@ class Engine {
         bool validSet = false;
         bool setCanBeMade = true;
         bool extraCards = false;
+        bool gameOver = false;
         string selecting;
 
         int totalScore = 0;
