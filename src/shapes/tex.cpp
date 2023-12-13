@@ -26,10 +26,11 @@ void Tex::draw() const {
 
 void Tex::initVectors() {
     this->vertices.insert(vertices.end(), {
-            -0.5f, 0.5f, 0.0f, 1.0f,  // Top left
-            0.5f, 0.5f, 1.0f, 1.0f,   // Top right
-            -0.5f, -0.5f, 0.0f, 0.0f, // Bottom left
-            0.5f, -0.5f, 1.0f, 0.0f   // Bottom right
+        // positions          // colors           // texture coords
+        0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+        0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+        -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
 
     });
 
@@ -84,15 +85,15 @@ void Tex::setVertices(int mapPos) {
     float bottom_right_v = top_right_v - CARD_Y;
 
     // top left
-    vertices[2] = float(top_left_u / MAP_X);
-    vertices[3] = float(top_left_v / MAP_Y);
+    vertices[6] = float(top_left_u / MAP_X);
+    vertices[7] = float(top_left_v / MAP_Y);
     // top right
-    vertices[6] = float(top_right_u / MAP_X);
-    vertices[7] = float(top_right_v / MAP_Y);
+    vertices[14] = float(top_right_u / MAP_X);
+    vertices[15] = float(top_right_v / MAP_Y);
     // bottom left
-    vertices[10] = float(bottom_left_u / MAP_X);
-    vertices[11] = float(bottom_left_v / MAP_Y);
+    vertices[22] = float(bottom_left_u / MAP_X);
+    vertices[23] = float(bottom_left_v / MAP_Y);
     // bottom right
-    vertices[14] = float(bottom_right_u / MAP_X);
-    vertices[15] = float(bottom_right_v / MAP_Y);
+    vertices[30] = float(bottom_right_u / MAP_X);
+    vertices[31] = float(bottom_right_v / MAP_Y);
 }
