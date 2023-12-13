@@ -82,10 +82,8 @@ void Engine::initShaders() {
     cardShader.use().setMatrix4("tex", this->PROJECTION);
 
     // Texturing magic
-    glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &textureObject);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, textureObject);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -97,6 +95,9 @@ void Engine::initShaders() {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imgX, imgY, 0, GL_RGBA, GL_UNSIGNED_BYTE, imgObject);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+
+    glBindTexture(GL_TEXTURE_2D, textureObject);
+    glEnable(GL_TEXTURE_2D);
 
 }
 
@@ -319,6 +320,7 @@ void Engine::render() {
                 mapPos = cardsInPlay[ii].getMapPos();
                 cardShapes[ii]->setVertices(mapPos);
                 cardShapes[ii]->setUniforms();
+                glBindTexture(GL_TEXTURE_2D, textureObject);
                 cardShapes[ii]->draw();
             }
 
@@ -345,6 +347,7 @@ void Engine::render() {
                 mapPos = cardsInPlay[ii].getMapPos();
                 cardShapes[ii]->setVertices(mapPos);
                 cardShapes[ii]->setUniforms();
+                glBindTexture(GL_TEXTURE_2D, textureObject);
                 cardShapes[ii]->draw();
             }
 
