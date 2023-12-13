@@ -70,7 +70,7 @@ void Engine::initShaders() {
                                                  "../res/shaders/card.frag",
                                                  nullptr, "tex");
     cardShader.use();
-    cardShader.setMatrix4("tex", this->PROJECTION);
+    cardShader.setMatrix4("projection", this->PROJECTION);
 
     // Configure text shader and renderer
     textShader = shaderManager->loadShader("../res/shaders/text.vert", "../res/shaders/text.frag", nullptr, "text");
@@ -79,7 +79,7 @@ void Engine::initShaders() {
     // Set uniforms
     textShader.use().setVector2f("vertex", vec4(100, 100, .5, .5));
     shapeShader.use().setMatrix4("projection", this->PROJECTION);
-    cardShader.use().setMatrix4("tex", this->PROJECTION);
+    cardShader.use().setMatrix4("projection", this->PROJECTION);
 
     // Texturing magic
     glGenTextures(1, &textureObject);
