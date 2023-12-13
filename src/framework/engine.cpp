@@ -302,10 +302,13 @@ void Engine::render() {
             fontRenderer->renderText(instructions_4b, 25, 170, .45, WHITE_VECT);
             fontRenderer->renderText(instructions_4c, 25, 150, .45, WHITE_VECT);
 
-            fontRenderer->renderText(instructions_5a, 25, 130, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_5b, 25, 110, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_5c, 25, 90, .45, WHITE_VECT);
-            fontRenderer->renderText(instructions_5d, 25, 70, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_5a, 25, 110, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_5b, 25, 90, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_5c, 25, 70, .45, WHITE_VECT);
+            fontRenderer->renderText(instructions_5d, 25, 50, .45, WHITE_VECT);
+
+            fontRenderer->renderText("Press [s] to begin!", 226, 10, .8, WHITE_VECT);
+
 
             break;
         }
