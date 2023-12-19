@@ -20,5 +20,5 @@ No additional installations should be required to run the program.
 
 ## Citations
 - The image loader, which takes a png and loads it into a 2D array for OpenGL to texture with comes from [here](https://github.com/nothings/stb/blob/master/stb_image.h).
-- The vertex and fragment shaders for the cards come from [here](https://learnopengl.com/Getting-started/Textures), where I learned the basics of texturing with OpenGL, though I don't believe I copied any other code.
+- The vertex and fragment shaders for the cards come from [here](https://learnopengl.com/Getting-started/Textures), where I learned the basics of texturing with OpenGL.
 - I created the images for the cards myself in Adobe Illustrator, and combined them all into the atlas png.
